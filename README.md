@@ -38,7 +38,7 @@ A summary of the GeoTweet application is provided in [PDF Format](resources/Data
 
 | Figure 1: GeoTweet - Summary |
 |----------|
-| ![GeoTweet - Summary](docs/Data_Science_Bootcamp_Final_Project_Summary.gif "Figure 1: GeoTweet - Summary") |
+| ![GeoTweet - Summary is loading...](docs/Data_Science_Bootcamp_Final_Project_Summary.gif "Figure 1: GeoTweet - Summary") |
 
 # Backend/Database
 
@@ -46,7 +46,7 @@ A description of key elements and enhancements for the GeoTweet application back
 
 | Figure 2: GeoTweet - Backend/Database |
 |----------|
-| ![GeoTweet - Backend/Database](docs/GeoTweet-Backend_Database.png "Figure 2: GeoTweet - Backend/Database") |
+| ![GeoTweet - Backend/Database is loading...](docs/GeoTweet-Backend_Database.png "Figure 2: GeoTweet - Backend/Database") |
 
 # Visualizations
 
@@ -59,10 +59,10 @@ Figure 3 below shows the GeoTweet main page, which is a dashboard containing:
 
 | Figure 3: GeoTweet - Main Page |
 |----------|
-| ![GeoTweet - Main PageGeoTweet - Main Page](docs/GeoTweet-visualization-screenshot.gif "Figure 3: GeoTweet - Main Page") |
+| ![GeoTweet - Main PageGeoTweet - Main Page is loading...](docs/GeoTweet-visualization-screenshot.gif "Figure 3: GeoTweet - Main Page") |
 
 Figure 4 below shows the GeoTweet demographics page, which sumarizes additional demogaphics facts
 
 | Figure 4: GeoTweet - Demographics Page |
 |----------|
-| ![GeoTweet - Main PageGeoTweet - Demographics Page](docs/GeoTweet-visualization-demographics-page.png "Figure 4: GeoTweet - Demographics Page") |
+| ![GeoTweet - Main PageGeoTweet - Demographics Page is loading...](docs/GeoTweet-visualization-demographics-page.png "Figure 4: GeoTweet - Demographics Page") |
