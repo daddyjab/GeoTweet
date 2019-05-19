@@ -42,7 +42,7 @@ A summary of the GeoTweet application is provided in [PDF Format](resources/Data
 
 # Backend/Database
 
-A description of key elements and enhancements for the GeoTweet application backend and database, key areas of contribution for me, are provided in Figure 2 below.
+A description of key elements and enhancements for the GeoTweet application backend and database, key areas of contribution for me, is provided in Figure 2 below.
 
 | Figure 2: GeoTweet - Backend/Database |
 |----------|
