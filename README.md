@@ -20,7 +20,7 @@ This application provides Full-stack Interactive Dashboard for examining Twitter
 # Contributions
 
 * Jeffery Brown - Designed and implemented:
-    * Flask application code for TBD of 21 routes
+    * Flask application code for 20 of 21 routes
     * SQLAlchemy classes for Locations, Trends, and Tweets tables and integration for use with SQLite (Development) and Postgres (Deployment)
     * Database management functions for unattended population and update of database tables
     * Jupyter Notebooks with exploratory analysis and query examples for ease of use by teammates
