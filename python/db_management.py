@@ -18,7 +18,7 @@ import time
 import os
 import pandas as pd
 import numpy as np
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from dateutil import tz, parser
 
 import requests
@@ -80,8 +80,8 @@ except TweepError:
 # # Function Definitions: Twitter API Rate Limit Management
 
 def api_rate_limits():
-# Return the number of Twitter API calls remaining
-# for the specified API type:
+    """ Return the number of Twitter API calls remaining for the specified API type: """
+
 # "trends/place": Top 10 trending topics for a WOEID
 # "trends/closest": Locations near a specificed lat/long for which Twitter has trending topic info
 # "trends/available": Locations for which Twitter has topic info
@@ -116,8 +116,8 @@ def api_rate_limits():
 
 
 def api_calls_remaining( a_type = "place"):
-# Return the number of Twitter API calls remaining
-# for the specified API type:
+    """ Return the number of Twitter API calls remaining for the specified API type: """
+
 # 'place': Top 10 trending topics for a WOEID
 # 'closest': Locations near a specificed lat/long for which Twitter has trending topic info
 # 'available': Locations for which Twitter has topic info
@@ -149,8 +149,8 @@ def api_calls_remaining( a_type = "place"):
 
 
 def api_time_before_reset( a_type = "place"):
-# Return the number of minutes until the Twitter API is reset
-# for the specified API type:
+    """ Return the number of minutes until the Twitter API is reset for the specified API type: """
+
 # 'place': Top 10 trending topics for a WOEID
 # 'closest': Locations near a specificed lat/long for which Twitter has trending topic info
 # 'available': Locations for which Twitter has topic info
@@ -208,9 +208,8 @@ def api_time_before_reset( a_type = "place"):
 # # Function Definitions: Twitter Locations with Available Trends Info
 
 def get_loc_with_trends_available_to_df( ):
-# Get locations that have trends data from a api.trends_available() call,
-# flatten the data, and create a dataframe
-
+    """ Get locations that have trends data from a api.trends_available() call, flatten the data, and create a dataframe """
+    
     # Obtain the WOEID locations for which Twitter Trends info is available
     try:
         trends_avail = api.trends_available()
@@ -991,4 +990,71 @@ def update_db_tweets_table(a_tweet_list):
     # Return the counts of add/update actions
     return retval
 
+def cleanup_db_tables(a_earlierthandate_string = None):
+    """ Clean the database by removing all Twitter Trends and associated Tweets that were updated earlier than or equal to a_earlierthandate_string """
 
+    # Parse the a_earlierthandate_string argument to a Date.
+    # If the string cannot be parsed, return 0 to indicate
+    # that no records were removed from the trends table
+
+    earlier_than_date = None
+
+    if a_earlierthandate_string.lower() == 'today':
+        earlier_than_date = date.today()
+
+    elif a_earlierthandate_string.lower() == 'yesterday':
+        earlier_than_date = date.today() - timedelta(days=1)
+
+    elif a_earlierthandate_string.lower() == 'last week':
+        earlier_than_date = date.today() - timedelta(days=7)
+
+    elif a_earlierthandate_string.lower() == 'tomorrow':
+        earlier_than_date = date.today() + timedelta(days=1)
+
+    else:
+        try:
+            earlier_than_date = parser.parse(a_earlierthandate_string).date()
+
+        except ValueError:
+            # Return with error indication
+            retval = {
+                'n_trends_remaining': None,
+                'n_trends_deleted': 0,
+                'n_tweets_remaining': None,
+                'n_tweets_deleted': 0
+            }
+            return retval
+
+    # Count the number of total records in the Trends table
+    n_trends = db.session.query(Trend).count()
+
+    # Count the number of records with "updated_at" dates
+    # earlier than or equal to earlier_than_date
+    n_target_trends = db.session.query(Trend.updated_at) \
+                .filter( func.date(Trend.updated_at) <= earlier_than_date ) \
+                .count()
+
+    # Count the number of total records in the Trends table
+    n_tweets = db.session.query(Tweet).count()
+
+    # Count the number of records with "updated_at" dates
+    # earlier than or equal to earlier_than_date
+    n_target_tweets = db.session.query(Tweet.updated_at) \
+                .filter( func.date(Tweet.updated_at) <= earlier_than_date ) \
+                .count()
+
+    # Return summary of results
+    n_trends_remaining = n_trends - n_target_trends
+    n_trends_deleted = n_target_trends
+    
+    n_tweets_remaining = n_tweets - n_target_tweets
+    n_tweets_deleted = n_target_tweets
+
+    retval = {
+        'earlier_than_date': earlier_than_date.strftime("%x"),
+        'n_trends_remaining': n_trends_remaining,
+        'n_trends_deleted': n_trends_deleted,
+        'n_tweets_remaining': n_tweets_remaining,
+        'n_tweets_deleted': n_tweets_deleted
+    }
+    return retval

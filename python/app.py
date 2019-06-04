@@ -88,7 +88,8 @@ from .db_management import (
     api_rate_limits, api_calls_remaining, api_time_before_reset,
     update_db_locations_table, update_db_trends_table,
     parse_date_range,
-    get_tweet_list, update_db_tweets_table
+    get_tweet_list, update_db_tweets_table,
+    cleanup_db_tables
     )
 from .sentiment_analysis import SentimentAnalysis
 
