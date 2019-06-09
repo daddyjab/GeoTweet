@@ -89,7 +89,7 @@ from .db_management import (
     update_db_locations_table, update_db_trends_table,
     parse_date_range,
     get_tweet_list, update_db_tweets_table,
-    cleanup_db_tables
+    cleanup_records_before
     )
 from .sentiment_analysis import SentimentAnalysis
 
