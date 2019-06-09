@@ -12,6 +12,9 @@ from flask import Flask, render_template, jsonify, request, redirect
 # when deployed on Heroku
 from flask_cors import CORS
 
+# Import dependencies to help debugging
+from pprint import pprint
+
 #Dependencies for Sentiment Anaysis
 import tweepy, re #,csv,re,sys
 from textblob import TextBlob

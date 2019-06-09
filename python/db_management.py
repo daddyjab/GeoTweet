@@ -1054,29 +1054,25 @@ def cleanup_records_before(a_earlierthandatetime_string=None):
         # In the output report, note that this was a 'last update' cleanup
         delete_records_before_string = a_earlierthandatetime_string
 
+        # ********************* CLEAN UP: trends Table *******************************
         # Create a subquery to find the most recent "updated_at" record per trend (i.e., twitter_tweet_name)
         trend_subq = db.session.query(Trend.twitter_tweet_name, func.max(Trend.updated_at).label("max_updated_at")) \
             .group_by(Trend.twitter_tweet_name).subquery()
 
-        # ********************* CLEAN UP: trends Table *******************************
-        # DEBUG:
-        # Get a count of twitter_tweet_name (i.e., tweet_search_term)
+        # Delete twitter_tweet_name (i.e., tweet_search_term)
         # entries where the updated_at datetime is earlier than the updated_at datetime
         # for the most recently updated entry for this same twitter_tweet_name
-        n_target_trends = db.session.query(Trend.twitter_tweet_name) \
+        result = db.session.query(Tweet) \
             .filter(and_(
                 Trend.twitter_tweet_name == trend_subq.c.twitter_tweet_name,
                 Trend.updated_at < trend_subq.c.max_updated_at
-            )).count()
+            )).delete(synchronize_session='fetch')
+        
+        # Get the number of rows that were deleted
+        n_target_trends = result
 
-        # result = db.session.query(Tweet) \
-        #     .filter(and_(
-        #         Trend.twitter_tweet_name == trend_subq.c.twitter_tweet_name,
-        #         Trend.updated_at < trend_subq.c.max_updated_at
-        #     )).delete()
-        #
-        # n_target_trends = result.rowcount
-
+        # Commit the deletion
+        db.session.commit()
 
     else:
         # Argument: 'today', 'yesterday', other common language terms
@@ -1089,37 +1085,44 @@ def cleanup_records_before(a_earlierthandatetime_string=None):
 
         elif a_earlierthandatetime_string.lower() == 'this hour':
             earlier_than_datetime = datetime.today()
-            earlier_than_datetime = earlier_than_datetime.replace(minute=0, second=0, microsecond=0)
+            earlier_than_datetime = earlier_than_datetime.replace(
+                minute=0, second=0, microsecond=0)
 
         elif a_earlierthandatetime_string.lower() == 'last hour':
             earlier_than_datetime = datetime.today() - timedelta(hours=1)
-            earlier_than_datetime = earlier_than_datetime.replace(minute=0, second=0, microsecond=0)
+            earlier_than_datetime = earlier_than_datetime.replace(
+                minute=0, second=0, microsecond=0)
 
         elif a_earlierthandatetime_string.lower() == 'today':
             # Criteria: Start (i.e., midnight) of the current date
             earlier_than_datetime = datetime.today()
-            earlier_than_datetime = earlier_than_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+            earlier_than_datetime = earlier_than_datetime.replace(
+                hour=0, minute=0, second=0, microsecond=0)
 
         elif a_earlierthandatetime_string.lower() == 'yesterday':
             # Criteria: Start (i.e., midnight) of the day before the current date
             earlier_than_datetime = datetime.today() - timedelta(days=1)
-            earlier_than_datetime = earlier_than_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+            earlier_than_datetime = earlier_than_datetime.replace(
+                hour=0, minute=0, second=0, microsecond=0)
 
         elif a_earlierthandatetime_string.lower() == 'last week':
             # Criteria: Start (i.e., midnight) of 7 days ago
             earlier_than_datetime = datetime.today() - timedelta(days=7)
-            earlier_than_datetime = earlier_than_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+            earlier_than_datetime = earlier_than_datetime.replace(
+                hour=0, minute=0, second=0, microsecond=0)
 
         elif a_earlierthandatetime_string.lower() == 'tomorrow':
             # Criteria: Start (i.e., midnight) of the day after today (i.e., gets all records)
             earlier_than_datetime = datetime.today() + timedelta(days=1)
-            earlier_than_datetime = earlier_than_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+            earlier_than_datetime = earlier_than_datetime.replace(
+                hour=0, minute=0, second=0, microsecond=0)
 
         else:
             # Argument: date/time string
             # Criteria: A specific date/time specified in a text string
             try:
-                earlier_than_datetime = parser.parse(a_earlierthandatetime_string)
+                earlier_than_datetime = parser.parse(
+                    a_earlierthandatetime_string)
 
             except ValueError:
                 # The date/time string could not be parsed
@@ -1128,37 +1131,49 @@ def cleanup_records_before(a_earlierthandatetime_string=None):
         # If a earlier_than_datetime has been correctly determined,
         # use it to generate the query on records to target for removal
         if earlier_than_datetime is not None:
-            delete_records_before_string = earlier_than_datetime.strftime("%x %X.%f")
+            delete_records_before_string = earlier_than_datetime.strftime(
+                "%x %X.%f")
 
             # ********************* CLEAN UP: trends Table *******************************
-            # DEBUG:
-            # Get a count of twitter_tweet_name (i.e., tweet_search_term)
+            # Delete twitter_tweet_name (i.e., tweet_search_term)
             # entries where the updated_at is earlier than the target datetime
-            n_target_trends = db.session.query(Trend.twitter_tweet_name) \
-                .filter(Trend.updated_at < earlier_than_datetime) \
-                .count()
+            result = db.session.query(Trend) \
+               .filter(Trend.updated_at < earlier_than_datetime) \
+               .delete(synchronize_session=False)
+            
+            # Get the number of rows that were deleted
+            n_target_trends = result
 
-            # result = db.session.query(Tweet) \
-            #    .filter(Trend.updated_at < earlier_than_datetime) \
-            #    .delete()
-            #
-            # n_target_trends = result.rowcount
+            # Commit the deletion
+            db.session.commit()
 
         else:
             # No datetime was properly parsed - report the error
             delete_records_before_string = f"ERROR: Cannot parse datetime string: '{a_earlierthandatetime_string}'"
-
 
     # ********************* CLEAN UP: tweets Table *******************************
     # Now that trends table has been cleaned up,
     # remove any tweets for which there is no longer a matching
     # twitter_tweet_name (i.e., tweet_search_term) in the trends table
 
-    # Count the number of records in the tweets table where the tweet_search_term
-    # has max updated_at that is earlier than the target datetime (via the subquery)
-    n_target_tweets = db.session.query(Tweet) \
+    # Create a subquery to get the list of tweet_search_terms in the tweets
+    # table for which there is no corresponding entry in the trends table
+    tweet_subq = db.session.query(Tweet.tweet_search_term.label("tweet_search_terms_to_delete")) \
         .outerjoin(Trend, Trend.twitter_tweet_name == Tweet.tweet_search_term) \
-        .filter( Trend.twitter_tweet_name == None).count()
+        .filter(Trend.twitter_tweet_name == None) \
+        .group_by(Tweet.tweet_search_term).subquery()
+
+    # Use the subquery to delete records in the tweets table where the tweet_search_term
+    # has no corresponding entry in the trends table
+    result = db.session.query(Tweet) \
+        .filter(Tweet.tweet_search_term == tweet_subq.c.tweet_search_terms_to_delete) \
+        .delete(synchronize_session='fetch')
+
+    # Get the number of rows that were deleted
+    n_target_tweets = result
+
+    # Commit the deletion
+    db.session.commit()
 
     # Return summary of results
     try:
@@ -1174,8 +1189,9 @@ def cleanup_records_before(a_earlierthandatetime_string=None):
 
         n_tweets_remaining = None
         n_tweets_deleted = None
-       
+
     retval = {
+        'a_earlierthandatetime_string': a_earlierthandatetime_string,
         'delete_records_before': delete_records_before_string,
         'n_trends_remaining': n_trends_remaining,
         'n_trends_deleted': n_trends_deleted,
