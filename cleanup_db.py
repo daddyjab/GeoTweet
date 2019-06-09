@@ -3,5 +3,5 @@
 from python.app import cleanup_records_before, pprint
 
 print("PERFORMING CLEAN-UP: Trends and Tweets Tables")
-results = cleanup_records_before("yesterday")
+results = cleanup_records_before("last hour")
 pprint(results)
