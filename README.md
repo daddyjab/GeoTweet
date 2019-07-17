@@ -13,9 +13,8 @@ This application provides Full-stack Interactive Dashboard for examining Twitter
 # Reference
 
 * GitHub: https://github.com/daddyjab/GeoTweet
-* Data Munging (Jupyter Notebook): https://github.com/daddyjab/CitiBike/blob/master/Citibike_Exploration_JAB.ipynb
-* Visualization (on Tableau Public): https://public.tableau.com/profile/jeffery.brown#!/vizhome/CitiBike_with_Paths_Idle_Time_JAB_v5/StoryCitiBike
-* Tableau file (tbwx): https://github.com/daddyjab/CitiBike/blob/master/CitiBike_with_Paths_Idle_Time_JAB_v5.twbx
+* Data Munging (Jupyter Notebook): https://github.com/daddyjab/GeoTweet/blob/master/resources/Database_Exploration/ETL_for_GeoTweet.ipynb
+* Visualization: https://github.com/daddyjab/GeoTweet#visualizations
 
 # Contributions
 
