@@ -4,3 +4,8 @@ python/static/js/MapWeb.js
 *.pyc
 **/twitter_trends.db
 python/data/twitter_trends.db
+.vscode/settings.json
+myapp.log
+.cleanup_db.py.swp
+docs/Data Science Bootcamp-Final Project-Summary.mp4
+docs/GeoTweet-visualization-screenshot.wmv
