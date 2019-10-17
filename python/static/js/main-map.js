@@ -4,18 +4,6 @@ function createMap(trendLocMarker) {
 
     //Create the base layers that will be the background of our map
 
-    // var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}", {
-    //     attribution: "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://mapbox.com\">Mapbox</a>",
-    //     maxZoom: 10,
-    //     minZoom:2,
-    //     id: "mapbox.light",
-    //     accessToken: API_KEY
-    // });
-
-
-    //var votes = createVoters();
-
-
     var states = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://mapbox.com\">Mapbox</a>",
 
@@ -37,7 +25,6 @@ function createMap(trendLocMarker) {
     // Create a baseMaps object to hold the lightmap layer
     var baseMaps = {
         "States": states
-        //"Voters": ChoroMap
     };
 
     // Create an overlayMaps object to hold the trend location layer
@@ -186,76 +173,6 @@ function createMap(trendLocMarker) {
         }).addTo(map);
     });
 };
-// //######################################################################################
-// // Choropleth
-// //######################################################################################
-// // Link to GeoJSON
-// 
-
-// function createVoters() {
-//     var statesData = "https://raw.githubusercontent.com/Euzkaro/project2.io/master/state-demgraphics.json"
-//     var votes = d3.json(statesData, function (data) {
-
-//         // Create a new choropleth layer
-//         geojson = L.choropleth(data, {
-
-//             // Define what  property in the features to use
-//             valueProperty: "Black",
-
-//             // Set color scale  
-//             scale: ["#c60b0b", "#2b0bc6"],
-
-//             // Number of breaks in step range
-//             steps: 10,
-
-//             // q for quartile, e for equidistant, k for k-means
-//             mode: "q",
-//             style: {
-//                 // Border color
-//                 color: "#fff",
-//                 weight: 1,
-//                 fillOpacity: 0.8
-//             }
-
-//         //     // Binding a pop-up to each layer
-//         //         onEachFeature: function(feature, layer) {
-//         //           layer.bindPopup("<h1>" + feature.properties.name + "</h1>" + "Population: " + feature.properties.Population + "<br> Democrat Voters:<br>" +
-//         //              feature.properties.Democrat + "%");
-//         //         }
-//         });//.addTo(map);
-
-//         // // Set up the legend
-//         // var legend = L.control({ position: "bottomright" });
-//         // legend.onAdd = function () {
-//         //     var div = L.DomUtil.create("div", "info legend");
-//         //     var limits = geojson.options.limits;
-//         //     var colors = geojson.options.colors;
-//         //     var labels = [];
-
-//         //     // Add min & max
-//         //     var legendInfo = "<h1>Democrat Voters (%)</h1>" +
-//         //         "<div class=\"labels\">" +
-//         //         "<div class=\"min\">" + limits[0] + "</div>" +
-//         //         "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-//         //         "</div>";
-
-//         //     div.innerHTML = legendInfo;
-
-//         //     limits.forEach(function (limit, index) {
-//         //         labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-//         //     });
-
-//         //     div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-//         //     return div;
-//         // };
-
-//         // // Adding legend to the map
-//         // legend.addTo(map);
-
-//     });
-//     return (votes);
-// };
-
 
 //######################################################################################
 function createMarkers(data) {
